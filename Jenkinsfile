@@ -11,7 +11,7 @@ pipeline {
       }
     }
 
-    stage('unit-test') {
+    stage('build') {
       steps {
         script {
           docker.image("${registry}:${env.BUILD_ID}").inside{
@@ -21,20 +21,30 @@ pipeline {
         }
       }
 
-      stage('Publish') {
+      stage('Test') {
         steps {
           script {
-            docker.withRegistry('','docker_id'){
-              docker.image("${registry}:${env.BUILD_ID}").push('latest')
-              docker.image("${registry}:${env.BUILD_ID}").push("${env.BUILD_ID}")
+            docker.image("${registry}:${env.BUILD_ID}").inside{
+              c-> sh 'cd scripts;chmod +x test.sh;./test.sh'}
             }
+
           }
-
         }
-      }
 
+        stage('Publish') {
+          steps {
+            script {
+              docker.withRegistry('','docker_id'){
+                docker.image("${registry}:${env.BUILD_ID}").push('latest')
+                docker.image("${registry}:${env.BUILD_ID}").push("${env.BUILD_ID}")
+              }
+            }
+
+          }
+        }
+
+      }
+      environment {
+        registry = 'orcunsagirsoy/jenkinsapp'
+      }
     }
-    environment {
-      registry = 'orcunsagirsoy/jenkinsapp'
-    }
-  }
