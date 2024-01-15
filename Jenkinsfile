@@ -10,10 +10,16 @@ pipeline {
 
       }
     }
+
+    stage('Executable') {
+      steps{
+        sh "chmod +x /scripts/build.sh"
+        sh "chmod +x /scripts/test.sh"
+      }
+    }
     
     stage('Build') {
       steps {
-        sh "chmod +x -R ${env.WORKSPACE}"
         script {
           docker.image("${registry}:${env.BUILD_ID}").inside{
             c-> sh 'cd scripts && ./build.sh'}
@@ -28,7 +34,6 @@ pipeline {
             docker.image("${registry}:${env.BUILD_ID}").inside{
               c-> sh 'cd scripts && ./test.sh'}
             }
-
           }
         }
     
