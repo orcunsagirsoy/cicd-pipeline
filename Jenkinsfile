@@ -11,16 +11,6 @@ pipeline {
       }
     }
 
-    stage('Executable') {
-      steps{
-        script {
-          docker.image("${registry}:${env.BUILD_ID}").inside{
-            c-> sh "cd scripts;chmod +x build.sh;chmod +x test.sh"}
-          }
-        }
-      }
-    }
-    
     stage('Build') {
       steps {
         script {
