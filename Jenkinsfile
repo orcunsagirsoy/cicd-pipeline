@@ -4,16 +4,6 @@ pipeline {
     stage('Build') {
       steps {
         script {
-          checkout scm
-          def customImage = docker.build("${registry}:${env.Build_ID}")
-        }
-
-      }
-    }
-
-    stage('build') {
-      steps {
-        script {
           docker.image("${registry}:${env.BUILD_ID}").inside{
             c-> sh 'cd scripts;chmod +x build.sh;./build.sh'}
           }
@@ -26,6 +16,16 @@ pipeline {
           script {
             docker.image("${registry}:${env.BUILD_ID}").inside{
               c-> sh 'cd scripts;chmod +x test.sh;./test.sh'}
+            }
+
+          }
+        }
+
+        stage('Docker') {
+          steps {
+            script {
+              checkout scm
+              def customImage = docker.build("${registry}:${env.Build_ID}")
             }
 
           }
