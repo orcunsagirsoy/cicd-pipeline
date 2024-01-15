@@ -10,26 +10,13 @@ pipeline {
 
       }
     }
-
-    stage('Publish') {
-      steps {
-        script {
-          docker.withRegistry('','docker_id'){
-            docker.image("${registry}:${env.BUILD_ID}").push('latest')
-            docker.image("${registry}:${env.BUILD_ID}").push("${env.BUILD_ID}")
-          }
-        }
-
-      }
-    }
-
+    
     stage('Build') {
       steps {
         script {
           docker.image("${registry}:${env.BUILD_ID}").inside{
             c-> sh '/scripts/build.sh'}
           }
-
         }
       }
 
@@ -42,6 +29,18 @@ pipeline {
 
           }
         }
+    
+      stage('Publish') {
+        steps {
+          script {
+            docker.withRegistry('','docker_id'){
+              docker.image("${registry}:${env.BUILD_ID}").push('latest')
+              docker.image("${registry}:${env.BUILD_ID}").push("${env.BUILD_ID}")
+            }
+          }
+  
+        }
+      }
 
       }
       environment {
