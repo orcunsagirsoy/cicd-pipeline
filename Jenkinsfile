@@ -1,6 +1,16 @@
 pipeline {
   agent any
   stages {
+    stage('Docker Manifest') {
+      steps {
+        script {
+          checkout scm
+          def customImage = docker.build("${registry}:${env.Build_ID}")
+        }
+
+      }
+    }
+
     stage('Build') {
       steps {
         script {
@@ -16,16 +26,6 @@ pipeline {
           script {
             docker.image("${registry}:${env.BUILD_ID}").inside{
               c-> sh 'cd scripts;chmod +x test.sh;./test.sh'}
-            }
-
-          }
-        }
-
-        stage('Docker') {
-          steps {
-            script {
-              checkout scm
-              def customImage = docker.build("${registry}:${env.Build_ID}")
             }
 
           }
