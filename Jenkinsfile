@@ -13,8 +13,9 @@ pipeline {
 
     stage('Executable') {
       steps{
-        sh "chmod +x /scripts/build.sh"
-        sh "chmod +x /scripts/test.sh"
+        sh "cd scripts"
+        sh "chmod +x build.sh"
+        sh "chmod +x test.sh"
       }
     }
     
