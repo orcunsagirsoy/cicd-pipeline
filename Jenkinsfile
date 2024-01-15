@@ -13,7 +13,11 @@ pipeline {
 
     stage('Executable') {
       steps{
-        sh "cd /scripts;chmod +x build.sh;chmod +x test.sh"
+        script {
+          docker.image("${registry}:${env.BUILD_ID}").inside{
+            c-> sh "cd scripts;chmod +x build.sh;chmod +x test.sh"}
+          }
+        }
       }
     }
     
