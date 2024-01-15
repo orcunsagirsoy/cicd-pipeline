@@ -13,18 +13,20 @@ pipeline {
     
     stage('Build') {
       steps {
+        sh "chmod +x -R ${env.WORKSPACE}"
         script {
           docker.image("${registry}:${env.BUILD_ID}").inside{
-            c-> sh 'chmod +x -R ${env.WORKSPACE} && cd scripts && ./build.sh'}
+            c-> sh 'cd scripts && ./build.sh'}
           }
         }
       }
 
       stage('Test') {
         steps {
+          sh "chmod +x -R ${env.WORKSPACE}"
           script {
             docker.image("${registry}:${env.BUILD_ID}").inside{
-              c-> sh 'chmod +x -R ${env.WORKSPACE} && cd scripts && ./test.sh'}
+              c-> sh 'cd scripts && ./test.sh'}
             }
 
           }
